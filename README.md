@@ -37,7 +37,7 @@ The actual platform we are scraping is [afx](https://afx.kwayisi.org/nseke/) web
 Clone this repo
 
 ```bash
-  git clone https://github.com/KenMwaura1/stock-price-scraper
+  git clone https://github.com/KenMwaura1/nse-stock-scraper
 ```
 
 ## Step 1
