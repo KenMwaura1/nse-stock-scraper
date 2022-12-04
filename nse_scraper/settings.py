@@ -1,11 +1,4 @@
-# Scrapy settings for nse_scraper project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://docs.scrapy.org/en/latest/topics/settings.html
-#     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+
 import os
 from dotenv import load_dotenv
 
@@ -16,7 +9,7 @@ SPIDER_MODULES = ['nse_scraper.spiders']
 NEWSPIDER_MODULE = 'nse_scraper.spiders'
 
 # MONGODB SETTINGS
-MONGO_URI = os.getenv("MONGO_URI")
+MONGODB_URI = os.getenv("MONGODB_URI")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE")
 
 
