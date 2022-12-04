@@ -20,15 +20,17 @@ class NseScraperPipeline:
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            mongodb_uri=crawler.settings.get('MONGODB_URI'),
-            mongo_db=crawler.settings.get('MONGODB_DATABASE', 'items')
+            mongodb_uri=crawler.settings.get("MONGODB_URI"),
+            mongo_db=crawler.settings.get('MONGO_DATABASE', 'nse_data')
         )
 
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(self.mongodb_uri)
         self.db = self.client[self.mongo_db]
+        # self.db[self.collection].create_index('stock_ticker')
+        # self.client.test.test.insert_one({'test': 'test'})
         # Start with a clean database
-        self.db[self.collection].delete_many({})
+        # self.db[self.collection].delete_many({})
 
     def close_spider(self, spider):
         self.client.close()
@@ -37,7 +39,13 @@ class NseScraperPipeline:
         """
         process item and store to database
         """
+        """
         if isinstance(item, NseScraperItem):
             data = dict(NseScraperItem(item))
             self.db[self.collection].insert_one(dict(data))
+        """
+        data = dict(NseScraperItem(item))
+        print(data)
+        print(self.db[self.collection].insert_one(data).inserted_id)
+
         return item
