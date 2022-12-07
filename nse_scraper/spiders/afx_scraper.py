@@ -1,16 +1,23 @@
+import scrapy
+from scrapy.settings.default_settings import CLOSESPIDER_PAGECOUNT, DEPTH_LIMIT
 from scrapy.spiders import CrawlSpider, Request
 from bs4 import BeautifulSoup
 from scrapy.spiders import Rule
-# from scrapy.linkextractors import LinkExtractor
+from scrapy.linkextractors import LinkExtractor
+from scrapy import signals
 
 
 class AfxScraperSpider(CrawlSpider):
     name = 'afx_scraper'
     allowed_domains = ['afx.kwayisi.org']
     start_urls = ['https://afx.kwayisi.org/nse/']
+    custom_settings = {
+        DEPTH_LIMIT: 1,
+        CLOSESPIDER_PAGECOUNT: 1
+    }
 
     rules = (
-        # Rule(LinkExtractor(allow='s?k=laptop&page=', restrict_css="a.s-pagination-next")),
+        Rule(LinkExtractor(deny='.html', ), callback='parse_item', follow=False),
         Rule(callback='parse_item'),
     )
 
@@ -22,14 +29,28 @@ class AfxScraperSpider(CrawlSpider):
         raw_ticker_symbol = row.xpath('td[1]').re('[A-Z].*')
         raw_stock_name = row.xpath('td[2]').re('[A-Z].*')
         raw_stock_price = row.xpath('td[4]').re('[0-9].*')
+        raw_stock_change = row.xpath('td[5]').re('[0-9].*')
 
-        # print(raw_ticker_symbol)
 
         # create a function to remove html tags from the returned list
+        def clean_stock_symbol(raw_symbol):
+            clean_symbol = BeautifulSoup(raw_symbol, "lxml").text
+            clean_symbol = clean_symbol.split('>')
+            # clean_name1 = clean_name[1].split('<')
+            # print(clean_name1)
+            if len(clean_symbol) > 1:
+                return clean_symbol[1]
+            else:
+                return None
         def clean_stock_name(raw_name):
             clean_name = BeautifulSoup(raw_name, "lxml").text
             clean_name = clean_name.split('>')
-            return clean_name[0]
+            # clean_name1 = clean_name[1].split('<')
+            # print(clean_name1)
+            if len(clean_name[0]) > 2:
+                return clean_name[0]
+            else:
+                return None
 
         def clean_stock_price(raw_price):
             clean_price = BeautifulSoup(raw_price, "lxml").text
@@ -38,16 +59,16 @@ class AfxScraperSpider(CrawlSpider):
         # Use list comprehension to unpack required values
         stock_name = [clean_stock_name(r_name) for r_name in raw_stock_name]
         stock_price = [clean_stock_price(r_price) for r_price in raw_stock_price]
-        stock_symbol = [clean_stock_name(r_symbol) for r_symbol in raw_ticker_symbol]
+        stock_symbol = [clean_stock_symbol(r_symbol) for r_symbol in raw_ticker_symbol]
         # using list slicing to remove the unnecessary data
-        stock_symbol = stock_symbol[6:]
-        # print(stock_symbol)
-        cleaned_data = zip(stock_symbol, stock_name, stock_price)
-        for item in cleaned_data:
-            scraped_data = {
-                'ticker': item[0],
-                'name': item[1],
-                'price': item[2],
-            }
-            # yield info to scrapy
-            yield scraped_data
+        # stock_symbol = stock_symbol[6:]
+        if stock_symbol is not None:
+            cleaned_data = zip(stock_symbol, stock_name, stock_price)
+            for item in cleaned_data:
+                scraped_data = {
+                    'ticker': item[0],
+                    'name': item[1],
+                    'price': item[2],
+                }
+                # yield info to scrapy
+                yield scraped_data
