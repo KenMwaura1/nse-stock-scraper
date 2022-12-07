@@ -11,13 +11,11 @@ NEWSPIDER_MODULE = 'nse_scraper.spiders'
 MONGODB_URI = os.getenv("MONGODB_URI")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE")
 
-# Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'nse_scraper.pipelines.NseScraperPipeline': 300,
 }
 LOG_LEVEL = "INFO"
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
+
 # USER_AGENT = 'nse_scraper (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
