@@ -34,7 +34,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: scraper-test
       run: |
-        cd nse-stock-scraper
+        cd nse_scraper
         scrapy crawl afx_scraper -a output_format=csv -a output_file=afx.csv
     
 #     - name: Test with pytest
