@@ -11,10 +11,17 @@
 # Daily Stock Price Scraper
 
 Web scraper utilizing scrapy to scrape live stock prices from the Nairobi Stock Exchange.
-The prices are then saved in MongoDB Database after each scrape, we use pymongo to connect to MongoDb Atlas
+The prices are then saved in MongoDB Database after each scrape, we use pymongo to connect to MongoDb Atlas. We then proceed to use Atlas Charts to visualize the data.
 
 The accompanying article can be found [here](https://dev.to/ken_mwaura1/nairobi-stock-exchange-web-scraper-mongodb-atlas-hackathon-2022-on-dev-5346)
 
+## Screenshots
+
+![App Screenshot](images/nse-scraper.png)
+
+![Atlas DB](images/Atlas-DB.png)
+
+![Charts Dashboard](images/charts-dashboard.png)
 
 The actual platform we are scraping is [afx](https://afx.kwayisi.org/nseke/) website.
 
