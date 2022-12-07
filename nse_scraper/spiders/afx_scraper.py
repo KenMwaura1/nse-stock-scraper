@@ -31,7 +31,6 @@ class AfxScraperSpider(CrawlSpider):
         raw_stock_price = row.xpath('td[4]').re('[0-9].*')
         raw_stock_change = row.xpath('td[5]').re('[0-9].*')
 
-
         # create a function to remove html tags from the returned list
         def clean_stock_symbol(raw_symbol):
             clean_symbol = BeautifulSoup(raw_symbol, "lxml").text
@@ -42,6 +41,7 @@ class AfxScraperSpider(CrawlSpider):
                 return clean_symbol[1]
             else:
                 return None
+
         def clean_stock_name(raw_name):
             clean_name = BeautifulSoup(raw_name, "lxml").text
             clean_name = clean_name.split('>')

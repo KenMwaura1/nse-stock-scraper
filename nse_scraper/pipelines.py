@@ -47,5 +47,6 @@ class NseScraperPipeline:
         data = dict(NseScraperItem(item))
         # print(data)
         # print(self.db[self.collection].insert_one(data).inserted_id)
+        self.db[self.collection].insert_one(data)
 
         return item

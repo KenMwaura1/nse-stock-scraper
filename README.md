@@ -11,11 +11,10 @@
 # Daily Stock Price Scraper
 
 Web scraper utilizing scrapy to scrape live stock prices from the Nairobi Stock Exchange.
-The prices are then saved in Postgres Database after each scrape, we use sqlalchemy as ORM
-and psycopg2 as database connector.
+The prices are then saved in MongoDB Database after each scrape, we use pymongo to connect to MongoDb Atlas
 
-The accompanying article(part one) can be found [here](https://dev.to/ken_mwaura1/daily-share-price-notifications-using-python-sql-and-africas-talking-part-one-17p)
-Part Two detailing deployment and notification [here](https://dev.to/ken_mwaura1/daily-share-price-notifications-using-python-sql-and-africas-talking-part-two-37db)
+The accompanying article can be found [here](https://dev.to/ken_mwaura1/nairobi-stock-exchange-web-scraper-mongodb-atlas-hackathon-2022-on-dev-5346)
+
 
 The actual platform we are scraping is [afx](https://afx.kwayisi.org/nseke/) website.
 
@@ -26,11 +25,8 @@ The actual platform we are scraping is [afx](https://afx.kwayisi.org/nseke/) web
 - Python and pip (I am currently using 3.9.2) Any version above 3.7 should work.
 - An [Africas Talking account](https://account.africastalking.com/auth/register/).
   - Api Key and username from your account. Create an app and take note of the api key.
-- Postgresql Database.
-  - This could either be installed locally or via  [docker](https://www.docker.com/).
-      This [article](https://blog.crunchydata.com/blog/easy-postgresql-12-and-pgadmin-4-setup-with-docker) is an awesome resource on how to get Postgresql and pgadmin4  installed as containers.
-
-    Create a database `nse_scraper`. Either using SQL or 3-party client like pgadmin4 or [dbeaver](https://dbeaver.io/)
+- MongoDB Atlas account, create a free account [here](https://www.mongodb.com/cloud/atlas/register)
+  - Create a cluster and take note of the connection string. 
 
 ## Installation
 
