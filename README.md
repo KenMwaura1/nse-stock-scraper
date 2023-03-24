@@ -1,14 +1,14 @@
+# Daily Stock Price Scraper
 
-## Badges 
-[![Python application](https://github.com/KenMwaura1/stock-price-scraper/actions/workflows/python-app.yml/badge.svg)](https://github.com/KenMwaura1/stock-price-scraper/actions/workflows/python-app.yml)
-=======
 ## Badges
 
+[![Python application](https://github.com/KenMwaura1/stock-price-scraper/actions/workflows/python-app.yml/badge.svg)](https://github.com/KenMwaura1/stock-price-scraper/actions/workflows/python-app.yml)
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-[![GPL license](https://img.shields.io/badge/License-GPL-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
+  
+[![MIT license](https://img.shields.io/badge/License-MIT-green.svg)](http://perso.crans.org/besson/LICENSE.html)
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
-# Daily Stock Price Scraper
+## Overview
 
 Web scraper utilizing scrapy to scrape live stock prices from the Nairobi Stock Exchange.
 The prices are then saved in MongoDB Database after each scrape, we use pymongo to connect to MongoDb Atlas. We then proceed to use Atlas Charts to visualize the data.
@@ -33,7 +33,7 @@ The actual platform we are scraping is [afx](https://afx.kwayisi.org/nseke/) web
 - An [Africas Talking account](https://account.africastalking.com/auth/register/).
   - Api Key and username from your account. Create an app and take note of the api key.
 - MongoDB Atlas account, create a free account [here](https://www.mongodb.com/cloud/atlas/register)
-  - Create a cluster and take note of the connection string. 
+  - Create a cluster and take note of the connection string.
 
 ## Installation
 
@@ -106,8 +106,6 @@ Run the scraper and have it output to a json file to preview.
 ```shell
 scrapy crawl afx_scraper -o test.json 
 ```
-
-
 
 Tweak the project name as necessary.
 
