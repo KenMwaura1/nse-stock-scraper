@@ -1,7 +1,6 @@
 from scrapy.settings.default_settings import CLOSESPIDER_PAGECOUNT, DEPTH_LIMIT
-from scrapy.spiders import CrawlSpider, Request
+from scrapy.spiders import CrawlSpider, Rule
 from bs4 import BeautifulSoup
-from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
 
 
