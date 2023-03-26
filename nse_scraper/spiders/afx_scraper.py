@@ -1,16 +1,14 @@
-import scrapy
 from scrapy.settings.default_settings import CLOSESPIDER_PAGECOUNT, DEPTH_LIMIT
-from scrapy.spiders import CrawlSpider, Request
+from scrapy.spiders import CrawlSpider, Rule
 from bs4 import BeautifulSoup
-from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
-from scrapy import signals
 
 
 class AfxScraperSpider(CrawlSpider):
     name = 'afx_scraper'
     allowed_domains = ['afx.kwayisi.org']
     start_urls = ['https://afx.kwayisi.org/nse/']
+    user_agent = 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36'
     custom_settings = {
         DEPTH_LIMIT: 1,
         CLOSESPIDER_PAGECOUNT: 1
@@ -59,16 +57,15 @@ class AfxScraperSpider(CrawlSpider):
         # Use list comprehension to unpack required values
         stock_name = [clean_stock_name(r_name) for r_name in raw_stock_name]
         stock_price = [clean_stock_price(r_price) for r_price in raw_stock_price]
-        stock_symbol = [clean_stock_symbol(r_symbol) for r_symbol in raw_ticker_symbol]
-        # using list slicing to remove the unnecessary data
-        # stock_symbol = stock_symbol[6:]
-        if stock_symbol is not None:
-            cleaned_data = zip(stock_symbol, stock_name, stock_price)
+        ticker_symbol = [clean_stock_symbol(r_symbol) for r_symbol in raw_ticker_symbol]
+        stock_change = [clean_stock_price(raw_change) for raw_change in raw_stock_change]
+        if ticker_symbol is not None:
+            cleaned_data = zip(ticker_symbol, stock_name, stock_price)
             for item in cleaned_data:
-                scraped_data = {
-                    'ticker': item[0],
-                    'name': item[1],
-                    'price': item[2],
-                }
-                # yield info to scrapy
-                yield scraped_data
+                 scraped_data= {
+                    'ticker_symbol': item[0],
+                    'stock_name': item[1],
+                    'stock_price': item[2],
+                    'stock_change': stock_change }
+        # yield info to scrapy
+        yield scraped_data
