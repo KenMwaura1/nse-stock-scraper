@@ -72,4 +72,5 @@ class AfxScraperSpider(CrawlSpider):
         # yield info to scrapy
         yield scraped_data
 
-    stock_query()
+    # uncom,ment to use text notifications
+    # stock_query()
