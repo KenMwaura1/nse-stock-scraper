@@ -2,7 +2,7 @@ from scrapy.settings.default_settings import CLOSESPIDER_PAGECOUNT, DEPTH_LIMIT
 from scrapy.spiders import CrawlSpider, Rule
 from bs4 import BeautifulSoup
 from scrapy.linkextractors import LinkExtractor
-from nse_scraper.stock_notification import stock_query
+# from nse_scraper.stock_notification import stock_query
 
 
 class AfxScraperSpider(CrawlSpider):
