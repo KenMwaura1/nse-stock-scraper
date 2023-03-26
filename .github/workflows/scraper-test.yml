@@ -38,7 +38,8 @@ jobs:
         export MONGODB_URI=mongodb://localhost:27017
         export MONGO_DATABASE=nse_data
         scrapy crawl afx_scraper -a output_format=csv -a output_file=afx.csv
-    
+        scrapy crawl afx_scraper -a output_format=json -a output_file=afx.json
+        
 #     - name: Test with pytest
 #       run: |
 #         pip install pytest

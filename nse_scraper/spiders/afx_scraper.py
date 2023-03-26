@@ -2,6 +2,7 @@ from scrapy.settings.default_settings import CLOSESPIDER_PAGECOUNT, DEPTH_LIMIT
 from scrapy.spiders import CrawlSpider, Rule
 from bs4 import BeautifulSoup
 from scrapy.linkextractors import LinkExtractor
+# from nse_scraper.stock_notification import stock_query
 
 
 class AfxScraperSpider(CrawlSpider):
@@ -59,6 +60,7 @@ class AfxScraperSpider(CrawlSpider):
         stock_price = [clean_stock_price(r_price) for r_price in raw_stock_price]
         ticker_symbol = [clean_stock_symbol(r_symbol) for r_symbol in raw_ticker_symbol]
         stock_change = [clean_stock_price(raw_change) for raw_change in raw_stock_change]
+        scraped_data = dict()
         if ticker_symbol is not None:
             cleaned_data = zip(ticker_symbol, stock_name, stock_price)
             for item in cleaned_data:
@@ -69,3 +71,6 @@ class AfxScraperSpider(CrawlSpider):
                     'stock_change': stock_change }
         # yield info to scrapy
         yield scraped_data
+
+    # uncom,ment to use text notifications
+    # stock_query()
