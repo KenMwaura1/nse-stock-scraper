@@ -9,7 +9,7 @@ NEWSPIDER_MODULE = 'nse_scraper.spiders'
 
 # MONGODB SETTINGS
 MONGODB_URI = os.getenv("MONGODB_URI")
-MONGO_DATABASE = os.getenv("MONGO_DATABASE")
+MONGO_DATABASE = os.getenv("MONGODB_DATABASE")
 
 ITEM_PIPELINES = {
     'nse_scraper.pipelines.NseScraperPipeline': 300,
