@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0-alpine
+    container_name: nse-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: nse_data
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nse_network
+    restart: unless-stopped
+
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nse-scraper
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/
+      MONGODB_DATABASE: nse_data
+      at_username: ${AT_USERNAME}
+      at_api_key: ${AT_API_KEY}
+      mobile_number: ${MOBILE_NUMBER}
+    volumes:
+      - ./nse_scraper:/app/nse_scraper
+      - ./httpcache:/app/httpcache
+    networks:
+      - nse_network
+    restart: unless-stopped
+    # For development, override with:
+    # command: crawl afx_scraper --loglevel=DEBUG
+    # To run notifications instead:
+    # command: python nse_scraper/stock_notification.py
+
+  # Optional: Scheduler for automated notifications (requires APScheduler)
+  # scheduler:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: nse-scheduler
+  #   depends_on:
+  #     - mongodb
+  #   environment:
+  #     MONGODB_URI: mongodb://mongodb:27017/
+  #     MONGODB_DATABASE: nse_data
+  #     at_username: ${AT_USERNAME}
+  #     at_api_key: ${AT_API_KEY}
+  #     mobile_number: ${MOBILE_NUMBER}
+  #   volumes:
+  #     - ./nse_scraper:/app/nse_scraper
+  #   networks:
+  #     - nse_network
+  #   restart: unless-stopped
+  #   command: python nse_scraper/stock_notification.py
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+
+networks:
+  nse_network:
+    driver: bridge
