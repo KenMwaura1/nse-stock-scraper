@@ -2,84 +2,57 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
 BOT_NAME = 'nse_scraper'
 
 SPIDER_MODULES = ['nse_scraper.spiders']
 NEWSPIDER_MODULE = 'nse_scraper.spiders'
 
-# MONGODB SETTINGS
+# MongoDB configuration
 MONGODB_URI = os.getenv("MONGODB_URI")
-MONGO_DATABASE = os.getenv("MONGODB_DATABASE")
+MONGO_DATABASE = os.getenv("MONGODB_DATABASE", "nse_data")
 
+# Item pipelines
 ITEM_PIPELINES = {
     'nse_scraper.pipelines.NseScraperPipeline': 300,
 }
-LOG_LEVEL = "INFO"
 
-# USER_AGENT = 'nse_scraper (+http://www.yourdomain.com)'
+# Logging
+LOG_LEVEL = "INFO"
+LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-# Configure maximum concurrent requests performed by Scrapy (default: 16)
-# CONCURRENT_REQUESTS = 32
+# User agent
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
-# Configure a delay for requests for the same website (default: 0)
-# See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
-# See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 3
-# The download delay setting will honor only one of:
-# CONCURRENT_REQUESTS_PER_DOMAIN = 16
-# CONCURRENT_REQUESTS_PER_IP = 16
-
-# Disable cookies (enabled by default)
-# COOKIES_ENABLED = False
-
-# Disable Telnet Console (enabled by default)
-# TELNETCONSOLE_ENABLED = False
-
-# Override the default request headers:
+# Request settings
 DEFAULT_REQUEST_HEADERS = {
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-  'Accept-Language': 'en',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate',
 }
 
-# Enable or disable spider middlewares
-# See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-# SPIDER_MIDDLEWARES = {
-#    'nse_scraper.middlewares.NseScraperSpiderMiddleware': 543,
-# }
+# Concurrent requests (be respectful)
+CONCURRENT_REQUESTS = 8
+CONCURRENT_REQUESTS_PER_DOMAIN = 2
 
-# Enable or disable downloader middlewares
-# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'nse_scraper.middlewares.NseScraperDownloaderMiddleware': 543,
-# }
+# Download delay (be respectful to target server)
+DOWNLOAD_DELAY = 1
 
-# Enable or disable extensions
-# See https://docs.scrapy.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-# }
-
-
-# Enable and configure the AutoThrottle extension (disabled by default)
-# See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-# AUTOTHROTTLE_ENABLED = True
-# The initial download delay
-# AUTOTHROTTLE_START_DELAY = 5
-# The maximum download delay to be set in case of high latencies
-# AUTOTHROTTLE_MAX_DELAY = 60
-# The average number of requests Scrapy should be sending in parallel to
-# each remote server
-# AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
-# Enable showing throttling stats for every response received:
-# AUTOTHROTTLE_DEBUG = False
-
-# Enable and configure HTTP caching (disabled by default)
-# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
+# HTTP Cache settings
 HTTPCACHE_ENABLED = True
-HTTPCACHE_EXPIRATION_SECS = 360
+HTTPCACHE_EXPIRATION_SECS = 3600  # Cache for 1 hour instead of 6 minutes
 HTTPCACHE_DIR = 'httpcache'
-# HTTPCACHE_IGNORE_HTTP_CODES = []
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# Retry settings
+RETRY_TIMES = 3
+RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
+
+# AutoThrottle (optional, but recommended)
+# AUTOTHROTTLE_ENABLED = True
+# AUTOTHROTTLE_START_DELAY = 5
+# AUTOTHROTTLE_MAX_DELAY = 60
+# AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
