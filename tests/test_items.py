@@ -3,15 +3,15 @@ Tests for nse_scraper items.py - Data schema validation
 """
 import unittest
 from datetime import datetime
-from nse_scraper.items import StockItem
+from nse_scraper.items import NseScraperItem
 
 
-class TestStockItem(unittest.TestCase):
-    """Test StockItem field definitions and validation"""
+class TestNseScraperItem(unittest.TestCase):
+    """Test NseScraperItem field definitions and validation"""
 
-    def test_stock_item_creation(self):
+    def test_item_creation(self):
         """Test creating a valid stock item"""
-        item = StockItem(
+        item = NseScraperItem(
             ticker_symbol="BAT",
             stock_name="Britam Holdings",
             stock_price=38.5,
@@ -24,17 +24,17 @@ class TestStockItem(unittest.TestCase):
         self.assertEqual(item["stock_change"], 0.5)
         self.assertIsInstance(item["created_at"], datetime)
 
-    def test_stock_item_fields(self):
+    def test_item_fields(self):
         """Test that all required fields exist"""
-        item = StockItem()
+        item = NseScraperItem()
         required_fields = ["ticker_symbol", "stock_name", "stock_price", "stock_change", "created_at"]
         
         for field in required_fields:
             self.assertIn(field, item.fields)
 
-    def test_stock_item_with_partial_data(self):
+    def test_item_with_partial_data(self):
         """Test creating item with partial data"""
-        item = StockItem(
+        item = NseScraperItem(
             ticker_symbol="EABL",
             stock_name="East African Breweries"
         )
@@ -43,13 +43,13 @@ class TestStockItem(unittest.TestCase):
 
     def test_stock_price_as_float(self):
         """Test stock price is stored as float"""
-        item = StockItem(stock_price=42.75)
+        item = NseScraperItem(stock_price=42.75)
         self.assertIsInstance(item["stock_price"], (int, float))
         self.assertEqual(item["stock_price"], 42.75)
 
     def test_stock_change_as_float(self):
         """Test stock change is stored as float"""
-        item = StockItem(stock_change=-0.25)
+        item = NseScraperItem(stock_change=-0.25)
         self.assertIsInstance(item["stock_change"], (int, float))
         self.assertEqual(item["stock_change"], -0.25)
 
