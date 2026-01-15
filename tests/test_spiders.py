@@ -28,10 +28,10 @@ class TestAfxScraperSpider(unittest.TestCase):
 
     def test_clean_text_method(self):
         """Test _clean_text removes whitespace"""
-        result = self.spider._clean_text("  Hello World  ")
+        result = self.spider._clean_text(["  Hello", "World  "])
         self.assertEqual(result, "Hello World")
         
-        result = self.spider._clean_text("Multiple  Spaces")
+        result = self.spider._clean_text(["Multiple", "Spaces"])
         self.assertNotIn("  ", result)
 
     def test_clean_price_conversion(self):
