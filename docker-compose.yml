@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mongodb:
-    image: mongo:7.0-alpine
+    image: mongo:7.0.14
     container_name: nse-mongodb
     environment:
       MONGO_INITDB_DATABASE: nse_data
