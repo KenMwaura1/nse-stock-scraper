@@ -1,5 +1,7 @@
 # Daily Stock Price Scraper
 
+📚 **[View Full Documentation](docs/INDEX.md)** | 🚀 **[Quick Start](docs/QUICKSTART.md)** | 🐳 **[Docker Guide](docs/DOCKER.md)** | 📋 **[Project Structure](docs/PROJECT_STRUCTURE.md)**
+
 ## Badges
 
 [![Python application](https://github.com/KenMwaura1/stock-price-scraper/actions/workflows/python-app.yml/badge.svg)](https://github.com/KenMwaura1/stock-price-scraper/actions/workflows/python-app.yml)
@@ -10,18 +12,17 @@
 
 ## Overview
 
-Web scraper utilizing scrapy to scrape live stock prices from the Nairobi Stock Exchange.
-The prices are then saved in MongoDB Database after each scrape, we use pymongo to connect to MongoDb Atlas. We then proceed to use Atlas Charts to visualize the data.
+A web scraper built with Scrapy that extracts live stock prices from the Nairobi Stock Exchange (NSE). The scraped prices are stored in a MongoDB Atlas database using PyMongo, and Atlas Charts is used to visualize the data.
 
-The accompanying article can be found [here](https://dev.to/ken_mwaura1/nairobi-stock-exchange-web-scraper-mongodb-atlas-hackathon-2022-on-dev-5346)
+The accompanying article can be found [here](https://dev.to/ken_mwaura1/nairobi-stock-exchange-web-scraper-mongodb-atlas-hackathon-2022-on-dev-5346).
 
 ## Screenshots
 
-![App Screenshot](images/nse-scraper.png)
+![App Screenshot](docs/images/nse-scraper.png)
 
-![Atlas DB](images/Atlas-DB.png)
+![Atlas DB](docs/images/Atlas-DB.png)
 
-![Charts Dashboard](images/charts-dashboard.png)
+![Charts Dashboard](docs/images/charts-dashboard.png)
 
 The actual platform we are scraping is [afx](https://afx.kwayisi.org/nseke/) website.
 
@@ -29,113 +30,236 @@ The actual platform we are scraping is [afx](https://afx.kwayisi.org/nseke/) web
 
 ### Prerequisites
 
-- Python and pip (I am currently using 3.9.2) Any version above 3.7 should work.
-- An [Africas Talking account](https://account.africastalking.com/auth/register/).
-  - Api Key and username from your account. Create an app and take note of the api key.
-- MongoDB Atlas account, create a free account [here](https://www.mongodb.com/cloud/atlas/register)
-  - Create a cluster and take note of the connection string.
+- Python 3.11 or higher (tested with 3.11, 3.12, 3.13) and pip
+- An [Africa's Talking account](https://account.africastalking.com/auth/register/)
+  - API Key and username from your account. Create an app and note the API key
+- A [MongoDB Atlas account](https://www.mongodb.com/cloud/atlas/register) (free tier available)
+  - Create a cluster and note the connection string
 
 ## Installation
 
-Clone this repo
+Clone the repository:
 
 ```bash
-  git clone https://github.com/KenMwaura1/nse-stock-scraper
+git clone https://github.com/KenMwaura1/nse-stock-scraper
+cd nse-stock-scraper
 ```
 
-## Step 1
+Create and activate a virtual environment:
 
-Change into the directory
+```bash
+python -m venv env
+source env/bin/activate
+```
 
-`cd stock-price-scraper`
+Alternatively, if you're using [pyenv](https://github.com/pyenv/pyenv):
 
-## Step 2
-
-Create a virtual environment (venv) to hold all the required dependencies.Here we use
-the built-in venv module.
-
-`python -m venv env`
-
-Activate the virtual environment
-
-`source env/bin/activate`
-
-Alternatively if you are using [pyenv](https://github.com/pyenv/pyenv).
-
-```shell
+```bash
 pyenv virtualenv nse_scraper
 pyenv activate nse_scraper
-   ```
-
-## Step 3
+```
 
 Install the required dependencies:
 
-`pip install -r requirements`
+```bash
+pip install -r requirements.txt
+```
 
-## Step 4
+## Configuration
 
-Change into the nse_scraper folder and create an environment file.
+Create an environment file for your credentials:
 
-```shell
+```bash
 cd nse_scraper
-touch .env 
+touch .env
 ```
 
-Add your credentials as specified in the example file.
+Add your credentials (API keys, MongoDB connection string, etc.) to the `.env` file. You can reference the example file for the required variables.
 
-OR
+Alternatively, copy the example environment file:
 
-Copy the provided  example and edit as required:
+```bash
+cp .env.example .env
+```
 
-`cp .env-example env`
+Then edit `.env` with your credentials.
 
-## Step 5
+### Required Environment Variables
 
-Navigate up to the main folder *stock-price-scraper*
-Run the scraper and check the logs for any errors .
+- **MONGODB_URI** - MongoDB Atlas connection string (with credentials)
+- **MONGODB_DATABASE** - MongoDB database name (default: `nse_data`)
+- **at_username** - Africa's Talking account username
+- **at_api_key** - Africa's Talking API key
+- **mobile_number** - Phone number for notifications (format: `+254XXXXXXXXX` for Kenya)
 
-```shell
-cd .. 
+## Running the Scraper
+
+From the project root directory, run the scraper:
+
+```bash
 scrapy crawl afx_scraper
 ```
 
-or
-Run the scraper and have it output to a json file to preview.
+To output results to a JSON file for preview:
 
-```shell
-scrapy crawl afx_scraper -o test.json 
+```bash
+scrapy crawl afx_scraper -o test.json
 ```
 
-Tweak the project name as necessary.
+The scraper will:
+1. Fetch stock data from the [AFX website](https://afx.kwayisi.org/nseke/)
+2. Parse stock prices, symbols, and changes
+3. Store data in MongoDB Atlas with a timestamp
+4. Prevent duplicate entries using unique indexes
 
-Ensure you add your configuration variables in ‘Settings’ → ‘Reveal Config Vars‘. This will allow Heroku to get and set the required environment configuration for our web scraper to run.
+### Running with Docker
 
-```python
-scrapy crawl afx_scraper
+**Prerequisites:** Docker and docker-compose installed
+
+**Setup:**
+```bash
+# Create environment file
+cp .env.docker .env
+
+# Edit .env with your credentials
+nano .env
 ```
 
-### Scheduling Text Notifications
+**Run the scraper:**
+```bash
+# Start MongoDB and run scraper
+docker-compose up --build
 
-Now we need add a scheduler for Heroku to run our notifiction script which will inturn send us texts. Since we already have an instance of Heroku running in our app we need an alternative. Advanced scheduler is a good option as it offers a free trial and if need be a $5 per month for an upgrade.
+# Run in background
+docker-compose up -d
 
-1. Setup
-   Inside our daily-nse-scraper app, search for the advanced scheduler addon. Select the trail-free plan and submit order form.
-   ![Alt Text](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/a78isp7oujzanegy19tg.png)
+# View logs
+docker-compose logs -f scraper
 
-2. Configuration
+# Stop services
+docker-compose down
+```
 
-Click on the Advanced Scheduler addon. Inside the overview page. Click on Create trigger button. The free trial allows up-to 3 triggers.
-We'll set a trigger for 11.00 am each day, specify the command `python nse_scraper/stock_notification.py` to run. Remember to select the correct timezone in my case its Africa/Nairobi and save the changes.
-![Alt Text](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/4833vqsyllt8d4humosk.png)
-3. Testing
-   To ensure the scheduler will execute as expected. We can manually run the trigger: on the overview page, click on the more button and select execute trigger.
-   ![Alt Text](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/uby5ur444r3hsuozzn0s.png)
+**Run individual commands:**
+```bash
+# Run scraper with debug logging
+docker-compose run --rm scraper crawl afx_scraper --loglevel=DEBUG
 
-You should now have received a notification text if everything went as expected.
+# Run notifications
+docker-compose run --rm scraper python nse_scraper/stock_notification.py
 
-![Alt Text](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/3xhb989mxodgeiqqu7ur.jpg)
+# Access MongoDB shell
+docker-compose exec mongodb mongosh
+```
+
+**Docker Tips:**
+- MongoDB data persists in Docker volumes (`mongodb_data`)
+- First run downloads ~500MB of images (Python, MongoDB)
+- Subsequent runs are much faster
+- For production, use environment variables instead of .env file
+
+## Scheduling Text Notifications
+
+To automate text notifications when stock prices change, use the `stock_notification.py` script with a scheduler.
+
+### Running Notifications Manually
+
+```bash
+python nse_scraper/stock_notification.py
+```
+
+This will:
+1. Query the latest stock data from MongoDB
+2. Check if the stock price meets the configured threshold (default: ≥ 38 KES)
+3. Send an SMS notification via Africa's Talking if the threshold is met
+
+### Automating with a Scheduler
+
+For Heroku deployments, use Advanced Scheduler:
+
+1. Install the Advanced Scheduler addon from your Heroku dashboard
+2. Click "Create trigger" and configure:
+   - **Schedule**: Daily at 11:00 AM
+   - **Command**: `python nse_scraper/stock_notification.py`
+   - **Timezone**: Africa/Nairobi (or your timezone)
+3. Test by clicking "Execute trigger" to verify notifications work
+
+## Automated Quality Checks
+
+This project uses GitHub Actions to automatically check code quality, security, and functionality on every push and pull request.
+
+### Workflow: Python Application
+
+**Jobs:**
+- **Lint** - Checks code style with flake8, Black, and isort (Python 3.11)
+- **Security** - Scans for vulnerabilities with Bandit and Safety (Python 3.11)
+- **Test** - Tests across Python 3.11, 3.12, 3.13 with MongoDB 6.0, 7.0, 8.0 (9 test combinations)
+- **Build** - Builds Docker image to ensure Dockerfile is valid
+
+**View Results:**
+- Go to **Actions** tab in GitHub to see workflow runs
+- Click on a workflow run to see detailed job logs
+- Pull requests show workflow status as checks
+
+### Dependency Updates with Dependabot
+
+Dependabot automatically checks for outdated dependencies and creates pull requests with updates:
+
+**What it monitors:**
+- Python packages (weekly updates)
+- GitHub Actions (weekly updates)
+- Docker base images (weekly updates)
+
+**How it works:**
+1. Dependabot creates a PR with dependency updates
+2. Automated tests run on the PR
+3. Review the changes and merge if tests pass
+4. Dependencies stay current and secure
+
+**Configuration:** `.github/dependabot.yml`
+
+For local development or other platforms, use tools like:
+- **Linux/Mac**: `cron` jobs
+- **Windows**: Task Scheduler
+- **Docker**: Scheduled containers
+- **APScheduler**: Python-based scheduling library
 
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Troubleshooting
+
+### MongoDB Connection Errors
+- Verify your `MONGODB_URI` is correct and includes credentials
+- Check that your IP address is whitelisted in MongoDB Atlas (Network Access)
+- Ensure the database name in `MONGODB_DATABASE` exists
+
+### Scraper Not Finding Data
+- Check that the target website structure hasn't changed
+- Run with `LOG_LEVEL = "DEBUG"` in settings to see detailed parsing info
+- Verify the CSS/XPath selectors match current HTML
+
+### SMS Notifications Not Sending
+- Verify Africa's Talking credentials are correct
+- Check that your account has sufficient balance
+- Ensure phone number format includes country code (e.g., +254XXXXXXXXX)
+
+## Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/improvement`)
+3. Make your changes and test
+4. Submit a pull request
+
+## Future Improvements
+
+- [ ] Add multiple stock watchlists
+- [ ] Implement price change threshold notifications
+- [ ] Add data visualization dashboard
+- [ ] Support multiple exchanges (ASE, BOURSE, etc.)
+- [ ] Add unit tests for spider and pipeline
+- [ ] Implement retry logic with exponential backoff
+- [ ] Add Telegram/Slack notification options
+
