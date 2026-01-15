@@ -26,9 +26,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy Python dependencies from builder
 COPY --from=builder /root/.local /root/.local
 
-# Copy application code
+# Copy application code and sample env
 COPY nse_scraper/ ./nse_scraper/
-COPY .env.example .env.example
+COPY config/.env.example .env.example
 COPY scrapy.cfg .
 
 # Set environment variables
