@@ -1,8 +1,7 @@
 .idea
 *.pyc
 *__pycache__
-<<<<<<< HEAD
-=======
+
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -143,4 +142,3 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
->>>>>>> 0969c5d (Got the scraper working!!)

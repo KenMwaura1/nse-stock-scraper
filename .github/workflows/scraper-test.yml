@@ -8,17 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8, 3.9, "3.10"]
-        mongodb-version: ['4.4', '5.0', '6.0']
+        python-version: ['3.11', '3.12', '3.13']
+        mongodb-version: ['6.0', '7.0', '8.0']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Set up MongoDB ${{ matrix.mongodb-version }}
-      uses: supercharge/mongodb-github-action@1.8.0
+      uses: supercharge/mongodb-github-action@1.11.0
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
     - name: Install dependencies
@@ -32,6 +32,9 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Run unit tests
+      run: |
+        make test
     - name: scraper-test
       run: |
         cd nse_scraper

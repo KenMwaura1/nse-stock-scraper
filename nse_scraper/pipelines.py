@@ -1,8 +1,11 @@
 # useful for handling different item types with a single interface
+import logging
 import pymongo
 from scrapy.exceptions import DropItem
 
 from .items import NseScraperItem
+
+logger = logging.getLogger(__name__)
 
 
 class NseScraperPipeline:
@@ -26,39 +29,56 @@ class NseScraperPipeline:
         )
 
     def open_spider(self, spider):
+        """Called when spider is opened"""
         self.client = pymongo.MongoClient(self.mongodb_uri)
         self.db = self.client[self.mongo_db]
-        # self.db[self.collection].create_index('stock_ticker')
-        # self.client.test.test.insert_one({'test': 'test'})
-        # Start with a clean database
-        # self.db[self.collection].delete_many({})
+        
+        # Create unique index on ticker_symbol to prevent duplicates
+        try:
+            self.db[self.collection].create_index(
+                [("ticker_symbol", pymongo.ASCENDING)],
+                unique=True
+            )
+            logger.info(f"Created unique index on {self.collection}.ticker_symbol")
+        except pymongo.errors.OperationFailure as e:
+            logger.warning(f"Index creation warning: {e}")
 
     def close_spider(self, spider):
+        """Called when spider is closed"""
         self.client.close()
+        logger.info("MongoDB connection closed")
     
-    def clean_stock_data(self,item):
-        if item['ticker_symbol'] is None:
-            raise DropItem('Missing ticker symbol in %s' % item)
-        elif item['stock_name'] == 'None':
-            raise DropItem('Missing stock name in %s' % item)
-        elif item['stock_price'] == 'None':
-            raise DropItem('Missing stock price in %s' % item)
-        else:
-            return item
-
     def process_item(self, item, spider):
-        """
-        process item and store to database
-        """
-        """
-        if isinstance(item, NseScraperItem):
-            data = dict(NseScraperItem(item))
-            self.db[self.collection].insert_one(dict(data))
-        """
-        clean_stock_data = self.clean_stock_data(item)
-        data = dict(NseScraperItem(clean_stock_data))
-        print(data)
-        # print(self.db[self.collection].insert_one(data).inserted_id)
-        self.db[self.collection].insert_one(data)
-
-        return item
+        """Process item and store to database"""
+        try:
+            # Validate required fields
+            if not item.get('ticker_symbol'):
+                raise DropItem(f'Missing ticker_symbol in {item}')
+            if not item.get('stock_name'):
+                raise DropItem(f'Missing stock_name in {item}')
+            if item.get('stock_price') is None:
+                raise DropItem(f'Missing stock_price in {item}')
+            
+            # Convert to dict
+            data = dict(item)
+            
+            # Replace or insert the document
+            result = self.db[self.collection].replace_one(
+                {'ticker_symbol': data['ticker_symbol']},
+                data,
+                upsert=True
+            )
+            
+            if result.matched_count:
+                logger.debug(f"Updated stock data for {data['ticker_symbol']}")
+            else:
+                logger.debug(f"Inserted stock data for {data['ticker_symbol']}")
+            
+            return item
+            
+        except DropItem as e:
+            logger.warning(f"Dropped item: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Error processing item: {e}", exc_info=True)
+            raise DropItem(f"Failed to process item: {e}")
