@@ -1,5 +1,5 @@
 # Multi-stage build for NSE Stock Scraper
-FROM python:3.11-slim as builder
+FROM python:3.14-slim as builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
 # Final stage
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
