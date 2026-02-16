@@ -6,7 +6,7 @@ certifi==2026.1.4
 cffi==2.0.0
 charset-normalizer==3.4.4
 constantly==23.10.4
-cryptography==46.0.4
+cryptography==46.0.5
 cssselect==1.4.0
 defusedxml==0.7.1
 dnspython==2.8.0
