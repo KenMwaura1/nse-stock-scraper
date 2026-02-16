@@ -10,7 +10,7 @@ cryptography==46.0.4
 cssselect==1.4.0
 defusedxml==0.7.1
 dnspython==2.8.0
-filelock==3.20.3
+filelock==3.24.2
 hyperlink==21.0.0
 idna==3.11
 Incremental==24.11.0
