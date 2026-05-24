@@ -4,7 +4,7 @@ Automat==25.4.16
 beautifulsoup4==4.14.3
 certifi==2026.2.25
 cffi==2.0.0
-charset-normalizer==3.4.4
+charset-normalizer==3.4.5
 constantly==23.10.4
 cryptography==46.0.5
 cssselect==1.4.0
