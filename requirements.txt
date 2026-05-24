@@ -2,7 +2,7 @@ africastalking==2.0.2
 attrs==25.4.0
 Automat==25.4.16
 beautifulsoup4==4.14.3
-certifi==2026.1.4
+certifi==2026.2.25
 cffi==2.0.0
 charset-normalizer==3.4.4
 constantly==23.10.4
