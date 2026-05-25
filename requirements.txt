@@ -18,7 +18,7 @@ iniconfig==2.3.0
 itemadapter==0.13.1
 itemloaders==1.4.0
 jmespath==1.1.0
-lxml==6.0.2
+lxml==6.1.1
 packaging==26.0
 parsel==1.11.0
 pluggy==1.6.0
