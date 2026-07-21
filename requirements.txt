@@ -29,7 +29,7 @@ pycparser==3.0
 PyDispatcher==2.0.7
 Pygments==2.19.2
 pymongo==4.16.0
-pyOpenSSL==25.3.0
+pyOpenSSL==26.2.0
 pytest==9.0.2
 python-dotenv==1.2.2
 PyYAML==6.0.3
