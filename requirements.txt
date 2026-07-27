@@ -12,7 +12,7 @@ defusedxml==0.7.1
 dnspython==2.8.0
 filelock==3.25.0
 hyperlink==21.0.0
-idna==3.11
+idna==3.18
 Incremental==24.11.0
 iniconfig==2.3.0
 itemadapter==0.13.1
